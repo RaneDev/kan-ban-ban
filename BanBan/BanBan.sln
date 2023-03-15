@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BanBan", "BanBan\BanBan.csproj", "{40A87011-4D2E-482A-8194-DABE147380E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainPage", "MainPage\MainPage.csproj", "{7ADC16D5-72DC-402E-8B30-7753007AF60C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{40A87011-4D2E-482A-8194-DABE147380E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40A87011-4D2E-482A-8194-DABE147380E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40A87011-4D2E-482A-8194-DABE147380E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ADC16D5-72DC-402E-8B30-7753007AF60C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ADC16D5-72DC-402E-8B30-7753007AF60C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ADC16D5-72DC-402E-8B30-7753007AF60C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ADC16D5-72DC-402E-8B30-7753007AF60C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

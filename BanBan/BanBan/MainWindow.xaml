@@ -5,29 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BanBan"
         mc:Ignorable="d"
-        Title="MainWindow" d:Width="1920" d:Height="1080">
-    <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="Black"/>
-        </Style>
-    </Window.Resources>
+        Title="MainWindow" MinWidth="500" MinHeight="500" d:Width="1920" d:Height="1080">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*" MinHeight="80"/>
             <RowDefinition Height="90*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="10*" MinWidth="100"/>
             <ColumnDefinition Width="90*"/>
         </Grid.ColumnDefinitions>
         <Grid Grid.ColumnSpan="2" Background="Tomato" x:Name="TopDrawer" DockPanel.Dock="Top">
-            
+
         </Grid>
         <Grid Grid.Row="1" Background="IndianRed" x:Name="LeftDrawer" DockPanel.Dock="Left">
-            
+
         </Grid>
         <Grid x:Name="Container" Grid.Row="1" Grid.Column="1" Background="LightCoral">
-            
         </Grid>
     </Grid>
 </Window>

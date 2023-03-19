@@ -25,7 +25,7 @@ namespace BanBan
         {
             InitializeComponent();
 
-            Container.Children.Add(new UserControl1());
+            Container.Children.Add(new MainView());
         }
     }
 }

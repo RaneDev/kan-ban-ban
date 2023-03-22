@@ -1,2 +1,2 @@
-# Ban Ban
+# Kan Ban Ban
 A personalized Kan ban application 

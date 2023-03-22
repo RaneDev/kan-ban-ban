@@ -2,7 +2,7 @@
 
 namespace MainModule.Models
 {
-    public class Group
+    public class Group : GroupBase, IGroup
     {
         public string Name { get; set; }
 

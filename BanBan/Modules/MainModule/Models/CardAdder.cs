@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MainModule.Models
 {
-    internal class SimpleCard : ICard
+    internal class CardAdder : ICard
     {
         public string Name { get; set; }
     }

@@ -22,9 +22,7 @@ namespace MainPage
     /// </summary>
     public partial class MainView : UserControl
     {
-        public ObservableCollection<Group> CardsGroups { get; set; }
-
-        public ObservableCollection<GroupAdder> CardsGroupAdder { get; set; }
+        public ObservableCollection<IGroup> CardsGroups { get; set; }
 
         public MainView()
         {
@@ -33,15 +31,10 @@ namespace MainPage
 
             CardsGroups = new()
             {
-                new Group() { Name =  "1", Cards = new() { new Card() { Name = "Card1" }, new Card() { Name = "Card2" } } },
-                new Group() { Name =  "2", Cards = new() { new Card() { Name = "Card1" }, new Card() { Name = "Card2" } } },
-                new Group() { Name =  "3", Cards = new() { new Card() { Name = "Card1" }, new Card() { Name = "Card2" } } },
-                new Group() { Name =  "4", Cards = new() { new SimpleCard() { Name = "CardSimple" }, new Card() { Name = "Card2" } } },
-            };
-
-            CardsGroupAdder = new()
-            {
-                new GroupAdder() {Text = "Adder"},
+                new Group() { Name =  "1", Cards = new() { new Card() { Name = "Card1", Content = new CardContent() { Description = "OhorOhor" } }, new Card() { Name = "Card2" }, new CardAdder() } },
+                new Group() { Name =  "2", Cards = new() { new Card() { Name = "Card1" }, new Card() { Name = "Card2" }, new CardAdder() } },
+                new Group() { Name =  "3", Cards = new() { new Card() { Name = "Card1" }, new Card() { Name = "Card2" } , new CardAdder() } },
+                new GroupAdder() {Name = "Adder"},
             };
         }
 

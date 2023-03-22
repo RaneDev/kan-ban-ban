@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using model = MainModule.Models;
 
-namespace BanBan.Resources.CustomControls
+namespace MainModule.CustomControls
 {
     /// <summary>
     /// Interaction logic for Card.xaml
@@ -24,5 +25,14 @@ namespace BanBan.Resources.CustomControls
         {
             InitializeComponent();
         }
+        private void updated(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if(DataContext == null) return;
+
+            model.Card card = DataContext as model.Card;
+            tbx.Text = card.Content.Description;
+
+        }
     }
 }
+

@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace MainModule.Models
 {
-    internal class Card : ICard
+    public class Card : ICard
     {
         public string Name { get; set; }
+        public CardContent Content { get; set; } = new CardContent() { Description = "Default" };
+    }
+
+    public class CardContent
+    {
+        public string Description { get; set; }
     }
 }

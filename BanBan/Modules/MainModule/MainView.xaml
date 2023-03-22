@@ -4,26 +4,26 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:model="clr-namespace:MainModule.Models"
+             xmlns:custom="clr-namespace:MainModule.CustomControls"
              xmlns:local="clr-namespace:MainPage"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
 
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="10">
         <ItemsControl x:Name="CardsGroupControls">
             <ItemsControl.Resources>
                 <CollectionViewSource x:Key="GroupsCollection" Source="{Binding CardsGroups}"/>
-                <CollectionViewSource x:Key="GroupAdderCollection" Source="{Binding CardsGroupAdder}"/>
                 <DataTemplate DataType="{x:Type model:Group}">
                     <ItemsControl>
                         <ItemsControl.Resources>
                             <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                             <DataTemplate DataType="{x:Type model:Card}">
-                                <TextBlock Margin="15" Text="{Binding Path=Name}"/>
+                                <custom:Card/>
                             </DataTemplate>
-                            <DataTemplate DataType="{x:Type model:SimpleCard}">
-                                <TextBlock Margin="15" Text="{Binding Path=Name}"/>
+                            <DataTemplate DataType="{x:Type model:CardAdder}">
+                                <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Card" />
                             </DataTemplate>
                         </ItemsControl.Resources>
                         <ItemsControl.ItemsSource>
@@ -45,16 +45,12 @@
                     </ItemsControl>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type model:GroupAdder}">
-                    <StackPanel MinWidth="100">
-                        <TextBlock Margin="15" Text="{Binding Path=Text}" Background="Pink"/>
-                        <TextBlock Margin="15" Text="{Binding Path=Text}" Background="Pink"/>
-                    </StackPanel>
+                    <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Group" />
                 </DataTemplate>
             </ItemsControl.Resources>
             <ItemsControl.ItemsSource>
                 <CompositeCollection>
                     <CollectionContainer Collection="{Binding Source={StaticResource GroupsCollection}}" />
-                    <CollectionContainer Collection="{Binding Source={StaticResource GroupAdderCollection}}" />
                 </CompositeCollection>
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemsPanel>

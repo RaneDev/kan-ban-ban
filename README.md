@@ -1,2 +1,2 @@
-# kan-ban-ban
-A personalized Kaban application 
+# Ban Ban
+A personalized Kan ban application 

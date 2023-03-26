@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BanBan"
         mc:Ignorable="d"
-        Title="MainWindow" MinWidth="500" MinHeight="500" d:Width="1920" d:Height="1080">
+        Title="MainWindow" MinWidth="500" MinHeight="500" d:Width="1920" d:Height="1080" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10*" MinHeight="80"/>

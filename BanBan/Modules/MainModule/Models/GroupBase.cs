@@ -8,6 +8,8 @@ namespace MainModule.Models
 {
     public class GroupBase : IGroup
     {
-        public string Name { get; set; }
+        public string ID { get; set; }
+        public string Name { get; set; } 
+
     }
 }

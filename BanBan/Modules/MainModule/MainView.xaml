@@ -11,38 +11,47 @@
     <UserControl.Resources>
 
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid x:Name="MyGrid" Margin="10">
         <ItemsControl x:Name="CardsGroupControls">
             <ItemsControl.Resources>
-                <CollectionViewSource x:Key="GroupsCollection" Source="{Binding CardsGroups}"/>
+                <CollectionViewSource x:Key="GroupsCollection" Source="{Binding Groups}"/>
                 <DataTemplate DataType="{x:Type model:Group}">
-                    <ItemsControl>
-                        <ItemsControl.Resources>
-                            <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
-                            <DataTemplate DataType="{x:Type model:Card}">
-                                <custom:Card/>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type model:CardAdder}">
-                                <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Card" />
-                            </DataTemplate>
-                        </ItemsControl.Resources>
-                        <ItemsControl.ItemsSource>
-                            <CompositeCollection>
-                                <CollectionContainer Collection="{Binding Source={StaticResource CardsCollection}}" />
-                            </CompositeCollection>
-                        </ItemsControl.ItemsSource>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove" Loaded="FlowCanvas_Loaded"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-                                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
+                    <Grid>
+                        <Grid HorizontalAlignment="Center" Tag="Separator" Width="50" Background="Orange"/>
+                        <Grid Tag="{Binding ID}" VerticalAlignment="Top"  Margin="5" Background="White" MouseDown="UserControl_MouseDown">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}"/>
+                                    <TextBlock Text="{Binding CardsCount}" Opacity="0.5"/>
+                                </StackPanel>
+                            </Grid>
+                            <ItemsControl Grid.Row="1">
+                                <ItemsControl.Resources>
+                                    <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
+                                    <DataTemplate DataType="{x:Type model:Card}">
+                                        <custom:Card/>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type model:CardAdder}">
+                                        <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text=" + Add Card" />
+                                    </DataTemplate>
+                                </ItemsControl.Resources>
+                                <ItemsControl.ItemsSource>
+                                    <CompositeCollection>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource CardsCollection}}" />
+                                    </CompositeCollection>
+                                </ItemsControl.ItemsSource>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </Grid>
+                    </Grid>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type model:GroupAdder}">
                     <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Group" />
@@ -55,9 +64,46 @@
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
+                    <StackPanel Loaded="load" Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+        <Canvas x:Name="MyCanvas">
+            <Grid x:Name="Dragger" Visibility="Collapsed" MouseMove="UserControl_MouseMove" MouseUp="UserControl_MouseUp">
+                <Grid DataContext="{Binding DragGroup}"  Tag="{Binding ID}" VerticalAlignment="Top"  Margin="5" Background="White" MouseDown="UserControl_MouseDown">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid >
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text="{Binding CardsCount}" Opacity="0.5"/>
+                        </StackPanel>
+                    </Grid>
+                    <ItemsControl Grid.Row="1">
+                        <ItemsControl.Resources>
+                            <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
+                            <DataTemplate DataType="{x:Type model:Card}">
+                                <custom:Card/>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type model:CardAdder}">
+                                <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text=" + Add Card" />
+                            </DataTemplate>
+                        </ItemsControl.Resources>
+                        <ItemsControl.ItemsSource>
+                            <CompositeCollection>
+                                <CollectionContainer Collection="{Binding Source={StaticResource CardsCollection}}" />
+                            </CompositeCollection>
+                        </ItemsControl.ItemsSource>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </Grid>
+            </Grid>
+        </Canvas>
     </Grid>
 </UserControl>

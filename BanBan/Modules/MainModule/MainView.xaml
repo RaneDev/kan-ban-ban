@@ -17,7 +17,7 @@
                 <CollectionViewSource x:Key="GroupsCollection" Source="{Binding Groups}"/>
                 <DataTemplate DataType="{x:Type model:Group}">
                     <Grid>
-                        <Grid HorizontalAlignment="Center" Tag="Separator" Width="50" Background="Orange"/>
+                        <Grid HorizontalAlignment="Center" Tag="Separator" Width="150" Background="Orange"/>
                         <Grid Tag="{Binding ID}" VerticalAlignment="Top"  Margin="5" Background="White" MouseDown="UserControl_MouseDown">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50"/>
@@ -33,7 +33,10 @@
                                 <ItemsControl.Resources>
                                     <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                                     <DataTemplate DataType="{x:Type model:Card}">
-                                        <custom:Card/>
+                                        <Grid>
+                                            <Grid Tag="CardSeparator" Height="50" Width="150" Background="Blue"/>
+                                            <custom:Card MouseDown="Card_MouseDown"/>
+                                        </Grid>
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type model:CardAdder}">
                                         <TextBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text=" + Add Card" />

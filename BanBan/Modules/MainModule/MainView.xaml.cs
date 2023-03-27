@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using MainModule.Models;
+using Cus = MainModule.CustomControls;
 
 namespace MainPage
 {
@@ -16,6 +17,7 @@ namespace MainPage
         public IGroup? DragGroup { get; set; }
 
         private Grid _blockNow = new();
+        private Cus.Card _cardNow = new();
         private Point blockPoint;
 
         public MainView()
@@ -35,6 +37,9 @@ namespace MainPage
 
         private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (Dragger.IsMouseCaptured)
+                return;
+
             _blockNow = (Grid)sender;
             _blockNow.Opacity = 0.5;
             blockPoint = Mouse.GetPosition(_blockNow);
@@ -44,6 +49,23 @@ namespace MainPage
             Dragger.Visibility = Visibility.Visible;
             Dragger.CaptureMouse();
         }
+
+
+        private void Card_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Dragger.IsMouseCaptured)
+                return;
+
+            _cardNow = (Cus.Card)sender;
+            _cardNow.Opacity = 0.5;
+            blockPoint = Mouse.GetPosition(_cardNow);
+
+            DragGroup = new Group { Cards = new ObservableCollection<ICard> { (Card)_cardNow.DataContext } };
+            OnPropertyChanged(nameof(DragGroup));
+            Dragger.Visibility = Visibility.Visible;
+            Dragger.CaptureMouse();
+        }
+
 
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -62,21 +84,42 @@ namespace MainPage
         private void UserControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
             _blockNow.Opacity = 1;
+            _cardNow.Opacity = 1;
             Dragger.Visibility = Visibility.Collapsed;
             Dragger.ReleaseMouseCapture();
         }
 
         private bool TryAddShadow(HitTestResult result)
         {
-            if (result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "Separator")
+            if (!string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "Separator")
             {
                 var grp = (Group)separator.DataContext;
                 var dgrp = (Group)_blockNow.DataContext;
 
-
                 Groups.Move(Groups.IndexOf(dgrp), Groups.IndexOf(grp));
                 CollectionViewSource.GetDefaultView(Groups).Refresh();
                 return true;
+            }
+            else if (string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement cardSeparator && cardSeparator.Tag?.ToString() == "CardSeparator")
+            {
+                var crd = (Card)cardSeparator.DataContext;
+                var crdnow = (Card)_cardNow.DataContext;
+
+                if (crd != crdnow)
+                {
+                    Group gg = (Group)Groups.First(g => g is Group g1 && g1.Cards.Contains(crdnow));
+                    Group ggg = (Group)Groups.First(g => g is Group g1 && g1.Cards.Contains(crd));
+                    if (gg == ggg)
+                    {
+                        gg.Cards.Move(gg.Cards.IndexOf(crdnow), gg.Cards.IndexOf(crd));
+                    }
+                    else
+                    {
+                        ggg.Cards.Insert(ggg.Cards.IndexOf(crd), crdnow);
+                        gg.Cards.Remove(crdnow);
+                    }
+                    CollectionViewSource.GetDefaultView(Groups).Refresh();
+                }
             }
             return false;
         }

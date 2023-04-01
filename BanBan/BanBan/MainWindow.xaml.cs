@@ -24,7 +24,6 @@ namespace BanBan
         public MainWindow()
         {
             InitializeComponent();
-
             Container.Children.Add(new MainView());
         }
     }

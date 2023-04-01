@@ -5,23 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BanBan"
         mc:Ignorable="d"
-        Title="MainWindow" MinWidth="500" MinHeight="500" d:Width="1920" d:Height="1080" WindowState="Maximized">
+        Title="MainWindow" MinWidth="500" MinHeight="500" d:Width="1920" d:Height="1080" 
+        WindowState="Maximized" Background="#121212" FontFamily="Roboto" >
+    <Window.Foreground>
+        <SolidColorBrush Color="#FFFFFF" Opacity="0.87"/>
+    </Window.Foreground>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*" MinHeight="80"/>
-            <RowDefinition Height="90*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="95*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*" MinWidth="100"/>
             <ColumnDefinition Width="90*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.ColumnSpan="2" Background="Tomato" x:Name="TopDrawer" DockPanel.Dock="Top">
-
-        </Grid>
-        <Grid Grid.Row="1" Background="IndianRed" x:Name="LeftDrawer" DockPanel.Dock="Left">
-
-        </Grid>
-        <Grid x:Name="Container" Grid.Row="1" Grid.Column="1" Background="LightCoral">
-        </Grid>
+        <Grid Grid.Column="1" Background="White" Opacity="0.05" x:Name="TopDrawer"/>
+        <Grid Grid.RowSpan="2" Background="White" Opacity="0.16" x:Name="LeftDrawer"/>
+        <Grid x:Name="Container" Grid.Row="1" Grid.Column="1"/>
     </Grid>
 </Window>

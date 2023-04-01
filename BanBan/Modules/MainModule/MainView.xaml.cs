@@ -44,7 +44,7 @@ namespace MainPage
             _blockNow.Opacity = 0.5;
             blockPoint = Mouse.GetPosition(_blockNow);
 
-            DragGroup = Groups.First(g => g is Group grp && grp.ID == _blockNow.Tag.ToString());
+            DragGroup = Groups.First(g => g is Group grp && grp.ID == _blockNow.Tag?.ToString());
             OnPropertyChanged(nameof(DragGroup));
             Dragger.Visibility = Visibility.Visible;
             Dragger.CaptureMouse();
@@ -83,12 +83,14 @@ namespace MainPage
 
         private void UserControl_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            hasinsert = false;
             _blockNow.Opacity = 1;
             _cardNow.Opacity = 1;
             Dragger.Visibility = Visibility.Collapsed;
             Dragger.ReleaseMouseCapture();
         }
 
+        private bool hasinsert = false;
         private bool TryAddShadow(HitTestResult result)
         {
             if (!string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "Separator")
@@ -102,7 +104,10 @@ namespace MainPage
             }
             else if (string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement cardSeparator && cardSeparator.Tag?.ToString() == "CardSeparator")
             {
-                var crd = (Card)cardSeparator.DataContext;
+                if (hasinsert)
+                    return false;
+
+                var crd = (ICard)cardSeparator.DataContext;
                 var crdnow = (Card)_cardNow.DataContext;
 
                 if (crd != crdnow)
@@ -113,10 +118,14 @@ namespace MainPage
                     {
                         gg.Cards.Move(gg.Cards.IndexOf(crdnow), gg.Cards.IndexOf(crd));
                     }
-                    else
+                    else 
                     {
-                        ggg.Cards.Insert(ggg.Cards.IndexOf(crd), crdnow);
+                        int ind = ggg.Cards.IndexOf(crd);
+                        ggg.Cards.Insert(ind, crdnow);
+                        _cardNow.DataContext = ggg.Cards[ind];
                         gg.Cards.Remove(crdnow);
+
+                        //hasinsert = true;
                     }
                     CollectionViewSource.GetDefaultView(Groups).Refresh();
                 }

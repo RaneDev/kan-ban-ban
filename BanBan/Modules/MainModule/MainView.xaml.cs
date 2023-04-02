@@ -41,7 +41,7 @@ namespace MainPage
                 return;
 
             _blockNow = (Grid)sender;
-            _blockNow.Opacity = 0.5;
+            _blockNow.Opacity = 0.2;
             blockPoint = Mouse.GetPosition(_blockNow);
 
             DragGroup = Groups.First(g => g is Group grp && grp.ID == _blockNow.Tag?.ToString());
@@ -57,7 +57,7 @@ namespace MainPage
                 return;
 
             _cardNow = (Cus.Card)sender;
-            _cardNow.Opacity = 0.5;
+            _cardNow.Opacity = 0.2;
             blockPoint = Mouse.GetPosition(_cardNow);
 
             DragGroup = new Group { Cards = new ObservableCollection<ICard> { (Card)_cardNow.DataContext } };

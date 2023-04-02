@@ -1,12 +1,146 @@
-<UserControl x:Class="MainPage.UserControl1"
+<UserControl x:Class="MainPage.MainView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:model="clr-namespace:MainModule.Models"
+             xmlns:custom="clr-namespace:MainModule.CustomControls"
              xmlns:local="clr-namespace:MainPage"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="nfoiewnfwre"/>
+    <UserControl.Resources>
+    </UserControl.Resources>
+    <Grid x:Name="MyGrid" Margin="10">
+        <ItemsControl x:Name="CardsGroupControls">
+            <ItemsControl.Resources>
+                <CollectionViewSource x:Key="GroupsCollection" Source="{Binding Groups}"/>
+                <DataTemplate DataType="{x:Type model:Group}">
+                    <Grid>
+                        <Grid HorizontalAlignment="Center" Tag="Separator" Width="150" Background="Transparent"/>
+                        <Grid Tag="{Binding ID}" VerticalAlignment="Top"  Margin="5" MouseDown="UserControl_MouseDown">
+                            <Grid.Background>
+                                <SolidColorBrush Color="White" Opacity="0.16" />
+                            </Grid.Background>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <DockPanel Margin="10">
+                                <TextBlock DockPanel.Dock="Left" FontSize="20" Text="{Binding Name}"/>
+                                <TextBlock Margin="10 0" FontSize="18" VerticalAlignment="Center" Text="{Binding CardsCount}" Opacity="0.6"/>
+                            </DockPanel>
+                            <ItemsControl Grid.Row="1">
+                                <ItemsControl.Resources>
+                                    <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
+                                    <DataTemplate DataType="{x:Type model:Card}">
+                                        <Grid>
+                                            <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
+                                            <custom:Card Margin="5" MouseDown="Card_MouseDown"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type model:CardAdder}">
+                                        <Grid>
+                                            <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
+                                            <TextBox Padding="5" BorderThickness="0" Tag="CardSeparator" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text="+ Add Card">
+                                                <TextBox.Background>
+                                                    <SolidColorBrush Color="#121212" Opacity="0.87"/>
+                                                </TextBox.Background>
+                                                <TextBox.Foreground>
+                                                    <SolidColorBrush Color="White" Opacity="0.87"/>
+                                                </TextBox.Foreground>
+                                            </TextBox>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.Resources>
+                                <ItemsControl.ItemsSource>
+                                    <CompositeCollection>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource CardsCollection}}" />
+                                    </CompositeCollection>
+                                </ItemsControl.ItemsSource>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </Grid>
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type model:GroupAdder}">
+                    <TextBox Padding="10" BorderThickness="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Group">
+                        <TextBox.Background>
+                            <SolidColorBrush Color="White" Opacity="0.16"/>
+                        </TextBox.Background>
+                        <TextBox.Foreground>
+                            <SolidColorBrush Color="White" Opacity="0.87"/>
+                        </TextBox.Foreground>
+                    </TextBox>
+                </DataTemplate>
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsSource>
+                <CompositeCollection>
+                    <CollectionContainer Collection="{Binding Source={StaticResource GroupsCollection}}" />
+                </CompositeCollection>
+            </ItemsControl.ItemsSource>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Loaded="load" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <Canvas x:Name="MyCanvas">
+            <Grid x:Name="Dragger" Visibility="Collapsed" MouseMove="UserControl_MouseMove" MouseUp="UserControl_MouseUp">
+                <Grid  DataContext="{Binding DragGroup}"  Tag="{Binding ID}" VerticalAlignment="Top" Background="#121212">
+                    <Grid Tag="{Binding ID}" VerticalAlignment="Top" MouseDown="UserControl_MouseDown">
+                        <Grid.Background>
+                            <SolidColorBrush Color="White" Opacity="0.16" />
+                        </Grid.Background>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel Margin="10">
+                            <TextBlock DockPanel.Dock="Left" FontSize="20" Text="{Binding Name}"/>
+                            <TextBlock Margin="10 0" FontSize="18" VerticalAlignment="Center" Text="{Binding CardsCount}" Opacity="0.6"/>
+                        </DockPanel>
+                        <ItemsControl Grid.Row="1">
+                            <ItemsControl.Resources>
+                                <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
+                                <DataTemplate DataType="{x:Type model:Card}">
+                                    <Grid>
+                                        <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
+                                        <custom:Card Margin="5" MouseDown="Card_MouseDown"/>
+                                    </Grid>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type model:CardAdder}">
+                                    <Grid>
+                                        <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
+                                        <TextBox Padding="5" BorderThickness="0" Tag="CardSeparator" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text=" + Add Card">
+                                            <TextBox.Background>
+                                                <SolidColorBrush Color="#121212" Opacity="0.87"/>
+                                            </TextBox.Background>
+                                            <TextBox.Foreground>
+                                                <SolidColorBrush Color="White" Opacity="0.87"/>
+                                            </TextBox.Foreground>
+                                        </TextBox>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.Resources>
+                            <ItemsControl.ItemsSource>
+                                <CompositeCollection>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource CardsCollection}}" />
+                                </CompositeCollection>
+                            </ItemsControl.ItemsSource>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </Canvas>
     </Grid>
 </UserControl>

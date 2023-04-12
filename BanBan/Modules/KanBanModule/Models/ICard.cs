@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainModule
+namespace KanBanModule.Models
 {
-    internal class MainViewModel
+    public interface ICard
     {
+        public string Name { get; set; }
     }
 }

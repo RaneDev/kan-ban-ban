@@ -5,9 +5,11 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BanBan", "BanBan\BanBan.csproj", "{40A87011-4D2E-482A-8194-DABE147380E3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainModule", "Modules\MainModule\MainModule.csproj", "{553F8DBE-F99E-4A51-918C-9D486B7FC2A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanBanModule", "Modules\KanBanModule\KanBanModule.csproj", "{553F8DBE-F99E-4A51-918C-9D486B7FC2A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F28674FC-7BEB-4106-A363-2999AA65440E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BanResources", "BanResources\BanResources.csproj", "{DE650610-37BC-448F-96FE-1643E2ED0091}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{553F8DBE-F99E-4A51-918C-9D486B7FC2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{553F8DBE-F99E-4A51-918C-9D486B7FC2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{553F8DBE-F99E-4A51-918C-9D486B7FC2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE650610-37BC-448F-96FE-1643E2ED0091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE650610-37BC-448F-96FE-1643E2ED0091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE650610-37BC-448F-96FE-1643E2ED0091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE650610-37BC-448F-96FE-1643E2ED0091}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

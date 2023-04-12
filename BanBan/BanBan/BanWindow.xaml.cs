@@ -12,17 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using KanBanModule;
 
-namespace MainModule.CustomControls
+namespace BanBan
 {
-    /// <summary>
-    /// Interaction logic for CardAdder.xaml
-    /// </summary>
-    public partial class CardAdder : UserControl
+    public partial class BanWindow : Window
     {
-        public CardAdder()
+        public BanWindow()
         {
             InitializeComponent();
+            Container.Children.Add(new KanBanView(new ResourceDictionary()));
         }
     }
 }

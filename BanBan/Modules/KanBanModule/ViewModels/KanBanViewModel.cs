@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainModule.Models
+namespace KanBanModule.ViewModels
 {
-    internal class CardAdder : ICard
+    internal class KanBanViewModel
     {
-        public string Name { get; set; }
     }
 }

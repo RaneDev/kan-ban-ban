@@ -1,11 +1,11 @@
-<UserControl x:Class="MainPage.MainView"
+<UserControl x:Class="KanBanModule.KanBanView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:model="clr-namespace:MainModule.Models"
-             xmlns:custom="clr-namespace:MainModule.CustomControls"
-             xmlns:local="clr-namespace:MainPage"
+             xmlns:model="clr-namespace:KanBanModule.Models"
+             xmlns:custom="clr-namespace:KanBanModule.CustomControls"
+             xmlns:local="clr-namespace:KanBanModule"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -35,20 +35,13 @@
                                     <DataTemplate DataType="{x:Type model:Card}">
                                         <Grid>
                                             <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                            <custom:Card Margin="5" MouseDown="Card_MouseDown"/>
+                                            <custom:Card Margin="5 0 5 5" MouseDown="Card_MouseDown"/>
                                         </Grid>
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type model:CardAdder}">
                                         <Grid>
                                             <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                            <TextBox Padding="5" BorderThickness="0" Tag="CardSeparator" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text="+ Add Card">
-                                                <TextBox.Background>
-                                                    <SolidColorBrush Color="#121212" Opacity="0.87"/>
-                                                </TextBox.Background>
-                                                <TextBox.Foreground>
-                                                    <SolidColorBrush Color="White" Opacity="0.87"/>
-                                                </TextBox.Foreground>
-                                            </TextBox>
+                                            <custom:CardAdder Margin="5 0 5 5"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.Resources>

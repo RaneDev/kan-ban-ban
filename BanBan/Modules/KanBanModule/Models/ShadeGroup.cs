@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace MainModule.Models
+namespace KanBanModule.Models
 {
     public class ShadeGroup : GroupBase, IGroup
     {

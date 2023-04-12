@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainModule.Models
+namespace KanBanModule.Models
 {
-    internal class MainModel
+    public interface IGroup
     {
+        public string Name { get; set; }
+
     }
 }

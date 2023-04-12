@@ -6,12 +6,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using MainModule.Models;
-using Cus = MainModule.CustomControls;
+using KanBanModule.Models;
+using Cus = KanBanModule.CustomControls;
 
-namespace MainPage
+namespace KanBanModule
 {
-    public partial class MainView : UserControl, INotifyPropertyChanged
+    public partial class KanBanView : UserControl, INotifyPropertyChanged
     {
         public ObservableCollection<IGroup> Groups { get; set; }
         public IGroup? DragGroup { get; set; }
@@ -20,9 +20,12 @@ namespace MainPage
         private Cus.Card _cardNow = new();
         private Point blockPoint;
 
-        public MainView()
+        public KanBanView(ResourceDictionary resource)
         {
             InitializeComponent();
+
+            Resources.MergedDictionaries.Add(resource);
+
             DataContext = this;
 
             Groups = new()

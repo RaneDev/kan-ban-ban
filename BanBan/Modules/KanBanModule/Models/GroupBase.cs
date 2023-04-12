@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainModule.Models
+namespace KanBanModule.Models
 {
     public class GroupBase : IGroup
     {

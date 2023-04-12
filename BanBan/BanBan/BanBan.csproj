@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Modules\MainModule\MainModule.csproj" />
+    <ProjectReference Include="..\BanResources\BanResources.csproj" />
+    <ProjectReference Include="..\Modules\KanBanModule\KanBanModule.csproj" />
   </ItemGroup>
 
 </Project>

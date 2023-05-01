@@ -6,9 +6,16 @@
              xmlns:model="clr-namespace:KanBanModule.Models"
              xmlns:custom="clr-namespace:KanBanModule.CustomControls"
              xmlns:local="clr-namespace:KanBanModule"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:resource="clr-namespace:BanResources;assembly=BanResources"
+             xmlns:conv="clr-namespace:BanResources.Converters;assembly=BanResources"
+             resource:ViewModelLocator.AutoConnectedViewModelProperty="True"       
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <ResourceDictionary>
+            <conv:MultiValueConverter x:Key="MultiValueConverter"/>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid x:Name="MyGrid" Margin="10">
         <ItemsControl x:Name="CardsGroupControls">
@@ -16,8 +23,15 @@
                 <CollectionViewSource x:Key="GroupsCollection" Source="{Binding Groups}"/>
                 <DataTemplate DataType="{x:Type model:Group}">
                     <Grid>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDown">
+                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DragStartCommand}" 
+                                                               CommandParameter="{Binding ElementName=Grid_Group}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        
                         <Grid HorizontalAlignment="Center" Tag="Separator" Width="150" Background="Transparent"/>
-                        <Grid Tag="{Binding ID}" VerticalAlignment="Top"  Margin="5" MouseDown="UserControl_MouseDown">
+                        <Grid x:Name="Grid_Group" Tag="{Binding ID}" VerticalAlignment="Top" Margin="5">
                             <Grid.Background>
                                 <SolidColorBrush Color="White" Opacity="0.16" />
                             </Grid.Background>
@@ -25,23 +39,33 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+
                             <DockPanel Margin="10">
                                 <TextBlock DockPanel.Dock="Left" FontSize="20" Text="{Binding Name}"/>
                                 <TextBlock Margin="10 0" FontSize="18" VerticalAlignment="Center" Text="{Binding CardsCount}" Opacity="0.6"/>
                             </DockPanel>
+
                             <ItemsControl Grid.Row="1">
                                 <ItemsControl.Resources>
                                     <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                                     <DataTemplate DataType="{x:Type model:Card}">
                                         <Grid>
                                             <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                            <custom:Card Margin="5 0 5 5" MouseDown="Card_MouseDown"/>
+                                            <Grid Margin="5 0 5 5">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseDown">
+                                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DragStartCardCommand}" 
+                                                               CommandParameter="{Binding ElementName=Card}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                                <custom:Card x:Name="Card"/>
+                                            </Grid>
                                         </Grid>
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type model:CardAdder}">
                                         <Grid>
                                             <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                            <custom:CardAdder Margin="5 0 5 5"/>
+                                            <custom:CardAdder Tag="{Binding GroupIndex}" CardAddCommand="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.CardAddedCommand}" Margin="5 0 5 5"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.Resources>
@@ -77,14 +101,33 @@
             </ItemsControl.ItemsSource>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <StackPanel Loaded="load" Orientation="Horizontal"/>
+                    <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
         <Canvas x:Name="MyCanvas">
-            <Grid x:Name="Dragger" Visibility="Collapsed" MouseMove="UserControl_MouseMove" MouseUp="UserControl_MouseUp">
+            <Grid x:Name="Dragger" Visibility="Collapsed">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DragSetupCommand}">
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                    <Binding ElementName="Dragger"/>
+                                    <Binding ElementName="MyGrid"/>
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseMove">
+                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DragMoveCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="MouseUp">
+                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.DragStopCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <Grid  DataContext="{Binding DragGroup}"  Tag="{Binding ID}" VerticalAlignment="Top" Background="#121212">
-                    <Grid Tag="{Binding ID}" VerticalAlignment="Top" MouseDown="UserControl_MouseDown">
+                    <Grid Tag="{Binding ID}" VerticalAlignment="Top" >
+                        <!--MouseDown="UserControl_MouseDown"-->
                         <Grid.Background>
                             <SolidColorBrush Color="White" Opacity="0.16" />
                         </Grid.Background>
@@ -102,7 +145,7 @@
                                 <DataTemplate DataType="{x:Type model:Card}">
                                     <Grid>
                                         <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                        <custom:Card Margin="5" MouseDown="Card_MouseDown"/>
+                                        <custom:Card Margin="5"/>
                                     </Grid>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type model:CardAdder}">

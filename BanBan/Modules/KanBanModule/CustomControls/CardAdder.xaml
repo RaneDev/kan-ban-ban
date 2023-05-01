@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KanBanModule.CustomControls"
-             xmlns:res="clr-namespace:BanResources;assembly=BanResources"
+             xmlns:resource="clr-namespace:BanResources;assembly=BanResources"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
     <Grid>
-        <TextBlock Padding="10" Text="+ Add Card">
+        <TextBlock Padding="10" Text="+ Add Card" MouseDown="CardAdder_MouseDown">
             <TextBlock.Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="Transparent" />
@@ -30,6 +30,13 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <res:PlaceholderTextBox/>
+        <resource:PlaceholderTextBox KeyDown="KeyDownHandler" BorderThickness="0" Padding="10" LostFocus="Hide_LostFocus" x:Name="CardDefineTextbox" Visibility="Collapsed" Placeholder=" Input a Card Name">
+            <resource:PlaceholderTextBox.Background>
+                <SolidColorBrush Color="#121212" Opacity="0.87"/>
+            </resource:PlaceholderTextBox.Background>
+            <resource:PlaceholderTextBox.Foreground>
+                <SolidColorBrush Color="White" Opacity="0.87"/>
+            </resource:PlaceholderTextBox.Foreground>
+        </resource:PlaceholderTextBox>
     </Grid>
 </UserControl>

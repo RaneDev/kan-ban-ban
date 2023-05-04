@@ -2,7 +2,7 @@
 
 namespace BanResources
 {
-    public static class Extensions
+    public static class UIExtensions
     {
         public static void ToggleVisibility(this UIElement uIElement, bool hidden = false)
         {

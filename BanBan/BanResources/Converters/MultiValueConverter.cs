@@ -1,5 +1,5 @@
-﻿using System.Windows.Data;
-using System;
+﻿using System;
+using System.Windows.Data;
 using System.Globalization;
 
 namespace BanResources.Converters
@@ -23,6 +23,21 @@ namespace BanResources.Converters
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PercentageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double percentage = System.Convert.ToDouble(parameter);
+            double actualWidth = (double)value;
+            return actualWidth * percentage;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

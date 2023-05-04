@@ -20,6 +20,6 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="1" Background="White" Opacity="0.05" x:Name="TopDrawer"/>
         <Grid Grid.RowSpan="2" Background="White" Opacity="0.16" x:Name="LeftDrawer"/>
-        <Grid x:Name="Container" Grid.Row="1" Grid.Column="1"/>
+        <Grid x:Name="Container" Grid.Row="1" Grid.Column="1" Margin="10"/>
     </Grid>
 </Window>

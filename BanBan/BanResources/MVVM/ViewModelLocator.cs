@@ -13,10 +13,7 @@ namespace BanResources
         typeof(ViewModelLocator),
         new PropertyMetadata(false, AutoConnectedViewModelChanged));
 
-        public static bool GetAutoConnectedViewModelProperty(DependencyObject obj)
-        {
-            return (bool)obj.GetValue(AutoConnectedViewModelProperty);
-        }
+        public static bool GetAutoConnectedViewModelProperty(DependencyObject obj) => (bool)obj.GetValue(AutoConnectedViewModelProperty);
 
         public static void SetAutoConnectedViewModelProperty
         (DependencyObject obj, bool value)
@@ -28,8 +25,9 @@ namespace BanResources
         {
             var viewTypeName = d.GetType().FullName;
             var viewModelTypeName = viewTypeName?.Insert(viewTypeName.IndexOf('.'), ".ViewModels") + "Model";
-            var viewModelType =  Assembly.GetAssembly(d.GetType())?.GetType(viewModelTypeName);
-            var viewModel = Activator.CreateInstance(viewModelType!);
+            var viewModelType = Assembly.GetAssembly(d.GetType())?.GetType(viewModelTypeName);
+            if (viewModelType == null) return;
+            var viewModel = Activator.CreateInstance(viewModelType);
             ((FrameworkElement)d).DataContext = viewModel;
         }
     }

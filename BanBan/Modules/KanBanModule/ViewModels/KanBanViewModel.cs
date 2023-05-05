@@ -113,7 +113,7 @@ namespace KanBanModule.ViewModels
         private bool hasinsert = false;
         private bool TryAddShadow(HitTestResult result)
         {
-            if (!string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "Separator")
+            if (!string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "GroupSeparator")
             {
                 var grp = (Group)separator.DataContext;
                 var dgrp = (Group)_blockNow.DataContext;

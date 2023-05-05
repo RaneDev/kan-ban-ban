@@ -9,6 +9,16 @@
              xmlns:resource="clr-namespace:BanResources;assembly=BanResources"
              resource:ViewModelLocator.AutoConnectedViewModelProperty="True"       
              mc:Ignorable="d" x:Name="KanBanUserControl">
+    <UserControl.Resources>
+        <Style x:Key="GroupSeparator" TargetType="Grid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Tag" Value="GroupSeparator"/>
+        </Style>
+        <Style x:Key="CardSeparator" TargetType="Grid">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Tag" Value="CardSeparator"/>
+        </Style>
+    </UserControl.Resources>
     <Grid x:Name="MainGrid">
         <ItemsControl>
             <ItemsControl.Resources>
@@ -21,8 +31,8 @@
                                                        CommandParameter="{Binding ElementName=GroupContentGrid}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        <Grid HorizontalAlignment="Center" Background="Transparent"
-                              Tag="Separator" 
+                        <Grid HorizontalAlignment="Center"
+                              Style="{StaticResource GroupSeparator}"
                               Width="{Binding ElementName=GroupGrid, Path=ActualWidth,
                                       Converter={StaticResource PercentageConverter}, ConverterParameter=0.7}" />
                         <Grid x:Name="GroupContentGrid" VerticalAlignment="Top" Margin="5"
@@ -34,9 +44,10 @@
                             </Grid.RowDefinitions>
 
                             <DockPanel Margin="10">
-                                <TextBlock DockPanel.Dock="Left" FontSize="20" 
+                                <TextBlock DockPanel.Dock="Left"
+                                           Style="{StaticResource Header3}"
                                            Text="{Binding Name}"/>
-                                <TextBlock Margin="10 0" FontSize="18"  Opacity="0.6" VerticalAlignment="Center" 
+                                <TextBlock Margin="10 0" FontSize="18" Opacity="0.6" VerticalAlignment="Center" 
                                            Text="{Binding CardsCount}"/>
                             </DockPanel>
 
@@ -45,8 +56,7 @@
                                     <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                                     <DataTemplate DataType="{x:Type model:Card}">
                                         <Grid>
-                                            <Grid Background="Transparent" Margin="10" 
-                                                  Tag="CardSeparator"/>
+                                            <Grid Margin="10" Style="{StaticResource CardSeparator}"/>
                                             <Grid Margin="5 0 5 5">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseDown">
@@ -60,8 +70,7 @@
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type model:CardAdder}">
                                         <Grid>
-                                            <Grid Background="Transparent" Margin="10"
-                                                  Tag="CardSeparator"/>
+                                            <Grid Margin="10" Style="{StaticResource CardSeparator}"/>
                                             <custom:CardAdder Margin="5 0 5 5"
                                                 Tag="{Binding GroupIndex}" 
                                                 CardAddCommand="{Binding ElementName=KanBanUserControl, Path=DataContext.CardAddedCommand}"/>
@@ -83,10 +92,10 @@
                     </Grid>
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type model:GroupAdder}">
-                    <TextBox Padding="10" BorderThickness="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" MinWidth="200" Height="50" Text=" + Add Group"
+                    <TextBox Padding="10" BorderThickness="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Height="50" Text=" + Add Group"
+                             MinWidth="{StaticResource CardWidth}"
                              Background="{Binding Source={StaticResource PrimaryItemBackground}}"
                              Foreground="{Binding Source={StaticResource PrimaryItemForeground}}"/>
-
                 </DataTemplate>
             </ItemsControl.Resources>
             <ItemsControl.ItemsSource>
@@ -100,14 +109,14 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-        <Canvas x:Name="MyCanvas">
-            <Grid x:Name="Dragger" Visibility="Collapsed">
+        <Canvas>
+            <Grid x:Name="DragView" Visibility="Collapsed">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Loaded">
                         <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragSetupCommand}">
                             <i:InvokeCommandAction.CommandParameter>
                                 <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                                    <Binding ElementName="Dragger"/>
+                                    <Binding ElementName="DragView"/>
                                     <Binding ElementName="MainGrid"/>
                                 </MultiBinding>
                             </i:InvokeCommandAction.CommandParameter>
@@ -120,44 +129,35 @@
                         <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragStopCommand}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+
                 <Grid VerticalAlignment="Top"  
                       DataContext="{Binding DragGroup}"  
                       Tag="{Binding ID}" 
                       Background="{Binding Source={StaticResource PrimaryBackground}}">
-                    <Grid Tag="{Binding ID}" VerticalAlignment="Top" >
-                        <Grid.Background>
-                            <SolidColorBrush Color="White" Opacity="0.16" />
-                        </Grid.Background>
+
+                    <Grid VerticalAlignment="Top" 
+                          Tag="{Binding ID}" 
+                          Background="{Binding Source={StaticResource PrimaryItemBackground}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+
                         <DockPanel Margin="10">
-                            <TextBlock DockPanel.Dock="Left" FontSize="20" Text="{Binding Name}"/>
-                            <TextBlock Margin="10 0" FontSize="18" VerticalAlignment="Center" Text="{Binding CardsCount}" Opacity="0.6"/>
+                            <TextBlock DockPanel.Dock="Left"
+                                       Style="{StaticResource Header3}"
+                                       Text="{Binding Name}"/>
+                            <TextBlock Margin="10 0" FontSize="18" VerticalAlignment="Center" Opacity="0.6" 
+                                       Text="{Binding CardsCount}"/>
                         </DockPanel>
+
                         <ItemsControl Grid.Row="1">
                             <ItemsControl.Resources>
                                 <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                                 <DataTemplate DataType="{x:Type model:Card}">
-                                    <Grid>
-                                        <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                        <custom:Card Margin="5"/>
-                                    </Grid>
+                                    <custom:Card Margin="5 0 5 5"/>
                                 </DataTemplate>
-                                <DataTemplate DataType="{x:Type model:CardAdder}">
-                                    <Grid>
-                                        <Grid Tag="CardSeparator" Background="Transparent" Margin="10"/>
-                                        <TextBox Padding="5" BorderThickness="0" Tag="CardSeparator" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5" Width="200" Height="50" Text=" + Add Card">
-                                            <TextBox.Background>
-                                                <SolidColorBrush Color="#121212" Opacity="0.87"/>
-                                            </TextBox.Background>
-                                            <TextBox.Foreground>
-                                                <SolidColorBrush Color="White" Opacity="0.87"/>
-                                            </TextBox.Foreground>
-                                        </TextBox>
-                                    </Grid>
-                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type model:CardAdder}"/>
                             </ItemsControl.Resources>
                             <ItemsControl.ItemsSource>
                                 <CompositeCollection>

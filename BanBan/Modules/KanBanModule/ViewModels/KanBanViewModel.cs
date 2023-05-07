@@ -2,41 +2,52 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using KanBanModule.Models;
-using Cus = KanBanModule.CustomControls;
 using BanResources.Commands;
+using CustomControl = KanBanModule.CustomControls;
 
 namespace KanBanModule.ViewModels
 {
     public class KanBanViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<IGroup> Groups { get; set; }
-        public IGroup? DragGroup { get; set; }
-
-        Grid Dragger { get; set; }
-        Grid MyGrid { get; set; }
-
         public ICommand DragSetupCommand { get; set; }
         public ICommand DragStartCommand { get; set; }
-        public ICommand DragStartCardCommand { get; set; }
         public ICommand DragMoveCommand { get; set; }
         public ICommand DragStopCommand { get; set; }
         public ICommand CardAddedCommand { get; set; }
 
-        private Grid _blockNow = new();
-        private Cus.Card _cardNow = new();
-        private Point blockPoint;
+        private IGroup? dragGroup;
+        public IGroup? DragGroup
+        {
+            get { return dragGroup; }
+            set
+            {
+                if (dragGroup != value)
+                {
+                    dragGroup = value;
+                    OnPropertyChanged(nameof(DragGroup));
+                }
+            }
+        }
+
+        public static string GroupSeparatorTag => "GSr";
+        public static string CardSeparatorTag => "CSr";
+
+        private FrameworkElement _dragView = new();
+        private FrameworkElement _selectedDragItem = new();
+        private Style _draggingStyle = new();
+        private Style _dragReleaseStyle = new();
+        private Point _referencePoint;
 
         public KanBanViewModel()
         {
-            DragSetupCommand = new RelayCommand<object>(DragSetup);
-            DragStartCommand = new RelayCommand<Grid>(DragStart);
-            DragStartCardCommand = new RelayCommand<object>(DragStart_Card);
-            DragMoveCommand = new RelayCommand(DragMove);
+            DragSetupCommand = new RelayCommand<(dynamic, dynamic, dynamic)>(DragSetup);
+            DragStartCommand = new RelayCommand<FrameworkElement>(DragStart);
+            DragMoveCommand = new RelayCommand<FrameworkElement>(DragMove);
             DragStopCommand = new RelayCommand(DragStop);
             CardAddedCommand = new RelayCommand<object>(CardAdding);
 
@@ -50,112 +61,94 @@ namespace KanBanModule.ViewModels
             };
         }
 
-        private void DragSetup(object items)
+        private void DragSetup((dynamic dragView, dynamic draggedStyle, dynamic dragReleaseStyle) sender)
         {
-            var tuple = ((object, object))items;
-            Dragger = (Grid)tuple.Item1;
-            MyGrid = (Grid)tuple.Item2;
-        }
-       
-        private void DragStart(Grid sender)
-        {
-            if (Dragger.IsMouseCaptured)
-                return;
-
-            _blockNow = (Grid)sender;
-            _blockNow.Opacity = 0.2;
-            blockPoint = Mouse.GetPosition(_blockNow);
-
-            DragGroup = Groups.First(g => g is Group grp && grp.ID == _blockNow.Tag?.ToString());
-            OnPropertyChanged(nameof(DragGroup));
-            Dragger.Visibility = Visibility.Visible;
-            Dragger.CaptureMouse();
+            _dragView =  sender.dragView;
+            _draggingStyle = sender.draggedStyle;
+            _dragReleaseStyle = sender.dragReleaseStyle;
         }
 
-        private void DragStart_Card(object sender)
+        private void DragStart(FrameworkElement dragItem)
         {
-            if (Dragger.IsMouseCaptured)
-                return;
+            if (_dragView.IsMouseCaptured) return;
 
-            _cardNow = (Cus.Card)sender;
-            _cardNow.Opacity = 0.2;
-            blockPoint = Mouse.GetPosition(_cardNow);
+            _selectedDragItem = dragItem;
 
-            DragGroup = new Group { Cards = new ObservableCollection<ICard> { (Card)_cardNow.DataContext } };
-            OnPropertyChanged(nameof(DragGroup));
-            Dragger.Visibility = Visibility.Visible;
-            Dragger.CaptureMouse();
-        }
-
-        private void DragMove()
-        {
-            if (!Dragger.IsMouseCaptured) return;
-
-            var mousePosition = Mouse.GetPosition((UIElement)VisualTreeHelper.GetParent(Dragger));
-            Dragger.RenderTransform = new TranslateTransform(mousePosition.X - blockPoint.X, mousePosition.Y - blockPoint.Y);
-
-            VisualTreeHelper.HitTest(MyGrid, null, result =>
+            DragGroup = _selectedDragItem.DataContext switch
             {
-                return TryAddShadow(result) ? HitTestResultBehavior.Stop : HitTestResultBehavior.Continue;
+                Group => Groups.First(groups => groups is Group group && group.ID == _selectedDragItem.Tag?.ToString()),
+                Card => new Group { Cards = new ObservableCollection<ICard> { (Card)_selectedDragItem.DataContext } },
+                _ => throw new System.NotImplementedException()
+            };
+
+            _selectedDragItem.Style = _draggingStyle;
+            _referencePoint = Mouse.GetPosition(dragItem);
+            _dragView.Visibility = Visibility.Visible;
+            _dragView.CaptureMouse();
+        }
+
+        private void DragMove(FrameworkElement mainPanel)
+        {
+            if (!_dragView.IsMouseCaptured) return;
+
+            var mousePosition = Mouse.GetPosition((UIElement)VisualTreeHelper.GetParent(_dragView));
+            _dragView.RenderTransform = new TranslateTransform(mousePosition.X - _referencePoint.X, mousePosition.Y - _referencePoint.Y);
+
+            VisualTreeHelper.HitTest(mainPanel, null, result =>
+            {
+                return TryInsertDragItem(result) ? HitTestResultBehavior.Stop : HitTestResultBehavior.Continue;
             }, new PointHitTestParameters(mousePosition));
         }
 
         private void DragStop()
         {
-            hasinsert = false;
-            _blockNow.Opacity = 1;
-            _cardNow.Opacity = 1;
-            Dragger.Visibility = Visibility.Collapsed;
-            Dragger.ReleaseMouseCapture();
+            _selectedDragItem.Style = _dragReleaseStyle;
+            _dragView.Visibility = Visibility.Collapsed;
+            _dragView.ReleaseMouseCapture();
         }
 
-
-        private bool hasinsert = false;
-        private bool TryAddShadow(HitTestResult result)
+        private bool TryInsertDragItem(HitTestResult result)
         {
-            if (!string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement separator && separator.Tag?.ToString() == "GroupSeparator")
-            {
-                var grp = (Group)separator.DataContext;
-                var dgrp = (Group)_blockNow.DataContext;
+            if (result?.VisualHit is not FrameworkElement separator) return false;
 
-                Groups.Move(Groups.IndexOf(dgrp), Groups.IndexOf(grp));
-                CollectionViewSource.GetDefaultView(Groups).Refresh();
-                return true;
+            if (separator.Tag?.ToString() == GroupSeparatorTag && _selectedDragItem.DataContext is Group group)
+            {
+                Groups.Move(Groups.IndexOf(group), Groups.IndexOf((Group)separator.DataContext));
+
             }
-            else if (string.IsNullOrWhiteSpace(DragGroup?.Name) && result?.VisualHit is FrameworkElement cardSeparator && cardSeparator.Tag?.ToString() == "CardSeparator")
+            else if (separator.Tag?.ToString() == CardSeparatorTag && _selectedDragItem.DataContext is Card selectedCard)
             {
-                if (hasinsert)
-                    return false;
+                var hitCard = (ICard)separator.DataContext;
 
-                var crd = (ICard)cardSeparator.DataContext;
-                var crdnow = (Card)_cardNow.DataContext;
+                if (hitCard == selectedCard) return false;
 
-                if (crd != crdnow)
+                var hitGroup = (Group)Groups.First(groups => groups is Group group && group.Cards.Contains(hitCard));
+                var selectedGroup = (Group)Groups.First(groups => groups is Group group && group.Cards.Contains(selectedCard));
+
+                if (selectedGroup == hitGroup)
                 {
-                    Group gg = (Group)Groups.First(g => g is Group g1 && g1.Cards.Contains(crdnow));
-                    Group ggg = (Group)Groups.First(g => g is Group g1 && g1.Cards.Contains(crd));
-                    if (gg == ggg)
-                    {
-                        gg.Cards.Move(gg.Cards.IndexOf(crdnow), gg.Cards.IndexOf(crd));
-                    }
-                    else
-                    {
-                        int ind = ggg.Cards.IndexOf(crd);
-                        ggg.Cards.Insert(ind, crdnow);
-                        _cardNow.DataContext = ggg.Cards[ind];
-                        gg.Cards.Remove(crdnow);
-
-                        //hasinsert = true;
-                    }
-                    CollectionViewSource.GetDefaultView(Groups).Refresh();
+                    selectedGroup.Cards.Move(selectedGroup.Cards.IndexOf(selectedCard), selectedGroup.Cards.IndexOf(hitCard));
+                }
+                else
+                {
+                    int hitCardIndex = hitGroup.Cards.IndexOf(hitCard);
+                    hitGroup.Cards.Insert(hitCardIndex, selectedCard);
+                    _selectedDragItem.DataContext = hitGroup.Cards[hitCardIndex];
+                    selectedGroup.Cards.Remove(selectedCard);
                 }
             }
-            return false;
+            else
+            {
+                return false;
+            }
+
+            CollectionViewSource.GetDefaultView(Groups).Refresh();
+            return true;
         }
 
         public void CardAdding(object sender)
         {
-            int index = (int)((Cus.CardAdder)sender).Tag;
+            int index = (int)((CustomControl.CardAdder)sender).Tag;
             var group = Groups[index] as Group;
             group?.Cards.Insert(group.Cards.Count - 1, new Card() { Name = "New Card", Content = new CardContent() { Description = "Cards" } });
         }

@@ -10,13 +10,11 @@
              resource:ViewModelLocator.AutoConnectedViewModelProperty="True"       
              mc:Ignorable="d" x:Name="KanBanUserControl">
     <UserControl.Resources>
-        <Style x:Key="GroupSeparator" TargetType="Grid">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Tag" Value="GroupSeparator"/>
+        <Style x:Key="DraggingStyle" TargetType="FrameworkElement">
+            <Setter Property="Opacity" Value="0.2"/>
         </Style>
-        <Style x:Key="CardSeparator" TargetType="Grid">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Tag" Value="CardSeparator"/>
+        <Style x:Key="DragReleaseStyle" TargetType="FrameworkElement">
+            <Setter Property="Opacity" Value="1"/>
         </Style>
     </UserControl.Resources>
     <Grid x:Name="MainGrid">
@@ -31,8 +29,8 @@
                                                        CommandParameter="{Binding ElementName=GroupContentGrid}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                        <Grid HorizontalAlignment="Center"
-                              Style="{StaticResource GroupSeparator}"
+                        <Grid HorizontalAlignment="Center" Background="Transparent"
+                              Tag="{Binding ElementName=KanBanUserControl, Path=DataContext.GroupSeparatorTag}"
                               Width="{Binding ElementName=GroupGrid, Path=ActualWidth,
                                       Converter={StaticResource PercentageConverter}, ConverterParameter=0.7}" />
                         <Grid x:Name="GroupContentGrid" VerticalAlignment="Top" Margin="5"
@@ -56,11 +54,12 @@
                                     <CollectionViewSource x:Key="CardsCollection" Source="{Binding Cards}"/>
                                     <DataTemplate DataType="{x:Type model:Card}">
                                         <Grid>
-                                            <Grid Margin="10" Style="{StaticResource CardSeparator}"/>
+                                            <Grid Margin="10" Background="Transparent"
+                                                  Tag="{Binding ElementName=KanBanUserControl, Path=DataContext.CardSeparatorTag}"/>
                                             <Grid Margin="5 0 5 5">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseDown">
-                                                        <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragStartCardCommand}" 
+                                                        <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragStartCommand}" 
                                                                                CommandParameter="{Binding ElementName=Card}"/>
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
@@ -70,7 +69,8 @@
                                     </DataTemplate>
                                     <DataTemplate DataType="{x:Type model:CardAdder}">
                                         <Grid>
-                                            <Grid Margin="10" Style="{StaticResource CardSeparator}"/>
+                                            <Grid Margin="10" Background="Transparent"
+                                                  Tag="{Binding ElementName=KanBanUserControl, Path=DataContext.CardSeparatorTag}"/>
                                             <custom:CardAdder Margin="5 0 5 5"
                                                 Tag="{Binding GroupIndex}" 
                                                 CardAddCommand="{Binding ElementName=KanBanUserControl, Path=DataContext.CardAddedCommand}"/>
@@ -117,13 +117,14 @@
                             <i:InvokeCommandAction.CommandParameter>
                                 <MultiBinding Converter="{StaticResource MultiValueConverter}">
                                     <Binding ElementName="DragView"/>
-                                    <Binding ElementName="MainGrid"/>
+                                    <Binding Source="{StaticResource DraggingStyle}"/>
+                                    <Binding Source="{StaticResource DragReleaseStyle}"/>
                                 </MultiBinding>
                             </i:InvokeCommandAction.CommandParameter>
                         </i:InvokeCommandAction>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="MouseMove">
-                        <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragMoveCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragMoveCommand}" CommandParameter="{Binding ElementName=MainGrid}"/>
                     </i:EventTrigger>
                     <i:EventTrigger EventName="MouseUp">
                         <i:InvokeCommandAction Command="{Binding ElementName=KanBanUserControl, Path=DataContext.DragStopCommand}"/>
